@@ -1,6 +1,6 @@
 package com.thami.security.repository;
 
-import com.thami.security.user.User;
+import com.thami.security.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
