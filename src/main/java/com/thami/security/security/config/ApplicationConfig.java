@@ -1,4 +1,4 @@
-package com.thami.security.config;
+package com.thami.security.security.config;
 
 import com.thami.security.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

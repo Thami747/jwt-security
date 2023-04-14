@@ -1,6 +1,5 @@
-package com.thami.security.config;
+package com.thami.security.security.config;
 
-import jakarta.servlet.Filter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

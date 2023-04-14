@@ -1,4 +1,4 @@
-package com.thami.security.model.user;
+package com.thami.security.model;
 
 public enum Role {
     USER,

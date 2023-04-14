@@ -1,4 +1,4 @@
-package com.thami.security.config;
+package com.thami.security.security.config;
 
 import com.thami.security.repository.TokenRepository;
 import jakarta.servlet.FilterChain;
@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            var isRepositoryTokenValid = tokenRepository.findByToken(jwt)
+            var isRepositoryTokenValid = tokenRepository.findByJwtToken(jwt)
                     .map(t -> !t.isExpired() && !t.isRevoked())
                     .orElse(false);
 

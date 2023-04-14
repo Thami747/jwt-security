@@ -1,4 +1,4 @@
-package com.thami.security.config;
+package com.thami.security.security.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -1,12 +1,12 @@
 package com.thami.security.auth;
 
-import com.thami.security.config.JwtService;
-import com.thami.security.model.token.Token;
-import com.thami.security.model.token.TokenType;
+import com.thami.security.security.config.JwtService;
+import com.thami.security.security.token.JwtToken;
+import com.thami.security.security.token.TokenType;
 import com.thami.security.repository.TokenRepository;
 import com.thami.security.repository.UserRepository;
-import com.thami.security.model.user.Role;
-import com.thami.security.model.user.User;
+import com.thami.security.model.Role;
+import com.thami.security.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -61,9 +61,9 @@ public class AuthenticationService {
     }
 
     private void saveUserToken(User user, String jwtToken) {
-        var token = Token.builder()
+        var token = JwtToken.builder()
                 .user(user)
-                .token(jwtToken)
+                .jwtToken(jwtToken)
                 .tokenType(TokenType.BEARER)
                 .expired(false)
                 .revoked(false)
@@ -72,12 +72,12 @@ public class AuthenticationService {
     }
 
     private void revokeAllUserTokens(User user) {
-        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
+        var validUserTokens = tokenRepository.findAllValidJwtTokenByUser(user.getId());
         if (validUserTokens.isEmpty())
             return;
-        validUserTokens.forEach(token -> {
-            token.setExpired(true);
-            token.setRevoked(true);
+        validUserTokens.forEach(jwtToken -> {
+            jwtToken.setExpired(true);
+            jwtToken.setRevoked(true);
         });
         tokenRepository.saveAll(validUserTokens);
     }

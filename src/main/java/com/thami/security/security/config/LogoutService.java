@@ -1,4 +1,4 @@
-package com.thami.security.config;
+package com.thami.security.security.config;
 
 import com.thami.security.repository.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +27,7 @@ public class LogoutService implements LogoutHandler {
             return;
         }
         jwt = authHeader.substring(7);
-        var storedToken = tokenRepository.findByToken(jwt)
+        var storedToken = tokenRepository.findByJwtToken(jwt)
                 .orElse(null);
         if (storedToken != null) {
             storedToken.setExpired(true);

@@ -1,6 +1,6 @@
-package com.thami.security.model.user;
+package com.thami.security.model;
 
-import com.thami.security.model.token.Token;
+import com.thami.security.security.token.JwtToken;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,7 +32,7 @@ public class User implements UserDetails {
     private Role role;
 
     @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
+    private List<JwtToken> jwtTokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

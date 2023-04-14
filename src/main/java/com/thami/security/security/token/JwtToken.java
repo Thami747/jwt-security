@@ -1,6 +1,6 @@
-package com.thami.security.model.token;
+package com.thami.security.security.token;
 
-import com.thami.security.model.user.User;
+import com.thami.security.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,14 +12,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Token {
+public class JwtToken {
 
   @Id
   @GeneratedValue
   public Long id;
 
   @Column(unique = true)
-  public String token;
+  public String jwtToken;
 
   @Enumerated(EnumType.STRING)
   public TokenType tokenType = TokenType.BEARER;
