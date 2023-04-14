@@ -13,3 +13,19 @@ spring:
         format_sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
+
+  mail:
+    host: localhost
+    port: 1025
+    username: root
+    password: admin
+
+    properties:
+      mail:
+        smtp:
+          ssl.trust: '*'
+          auth: true
+          starttls.enable: true
+          connection-timeout: 5000
+          timeout: 3000
+          writetimeout: 5000
