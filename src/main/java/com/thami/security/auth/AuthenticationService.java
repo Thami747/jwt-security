@@ -1,5 +1,6 @@
 package com.thami.security.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thami.security.security.config.JwtService;
 import com.thami.security.security.token.ConfirmationToken;
 import com.thami.security.security.token.ConfirmationTokenService;
@@ -9,12 +10,16 @@ import com.thami.security.repository.TokenRepository;
 import com.thami.security.repository.UserRepository;
 import com.thami.security.model.Role;
 import com.thami.security.model.User;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -43,7 +48,10 @@ public class AuthenticationService {
                 saveConfirmationToken(appUserPrevious, token);
 
                 return AuthenticationResponse.builder()
+                        .refreshToken("")
+                        .refreshToken("")
                         .confirmToken(token)
+                        .message("You have Successfully registered a new User")
                         .build();
 
             }
@@ -70,7 +78,9 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .jwtToken("")
+                .refreshToken("")
                 .confirmToken(token)
+                .message("You have successfully registered a new user")
                 .build();
     }
 
@@ -84,13 +94,17 @@ public class AuthenticationService {
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
 
-        var jwtToken = jwtService.generateJwtToken(user);
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
 
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
 
         return AuthenticationResponse.builder()
+                .confirmToken("")
                 .jwtToken(jwtToken)
+                .refreshToken(refreshToken)
+                .message("User successfully logged in!")
                 .build();
     }
 
@@ -124,5 +138,33 @@ public class AuthenticationService {
             jwtToken.setRevoked(true);
         });
         tokenRepository.saveAll(validUserTokens);
+    }
+
+    public void refreshToken(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException {
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String refreshToken;
+        final String userEmail;
+        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+            return;
+        }
+        refreshToken = authHeader.substring(7);
+        userEmail = jwtService.extractUsername(refreshToken);
+        if (userEmail != null) {
+            var user = this.userRepository.findByEmail(userEmail)
+                    .orElseThrow();
+            if (jwtService.isTokenValid(refreshToken, user)) {
+                var accessToken = jwtService.generateToken(user);
+                revokeAllUserTokens(user);
+                saveUserToken(user, accessToken);
+                var authResponse = AuthenticationResponse.builder()
+                        .jwtToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .build();
+                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+            }
+        }
     }
 }
