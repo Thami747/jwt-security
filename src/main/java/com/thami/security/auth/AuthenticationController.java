@@ -17,18 +17,23 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final RegistrationService registrationService;
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest userRequest, HttpServletRequest httpServletRequest) {
-        return ResponseEntity.ok(registrationService.register(userRequest, getSiteURL(httpServletRequest)));
+    @PostMapping("/individual/register")
+    public ResponseEntity<AuthenticationResponse> registerCustomer(@RequestBody IndividualEmailRegisterRequest userRequest, HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(registrationService.registerCustomer(userRequest, getSiteURL(httpServletRequest)));
+    }
+
+    @PostMapping("/corporate/register")
+    public ResponseEntity<AuthenticationResponse> registerCorporate(@RequestBody CorporateEmailRegisterRequest userRequest, HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(registrationService.registerCorporate(userRequest, getSiteURL(httpServletRequest)));
     }
 
     @GetMapping(path = "confirm")
-    public String confirm(@RequestParam("token") String token) {
-        return registrationService.confirmToken(token);
+    public ResponseEntity<AuthenticationResponse> confirm(@RequestParam("token") String token) {
+        return ResponseEntity.ok(registrationService.confirmToken(token));
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<LoginResponse> authenticate(@RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 

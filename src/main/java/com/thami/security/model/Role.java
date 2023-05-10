@@ -13,6 +13,8 @@ import static com.thami.security.model.Permission.*;
 @RequiredArgsConstructor
 public enum Role {
 
+    INDIVIDUAL(Collections.emptySet()),
+    CORPORATE(Collections.emptySet()),
     USER(Collections.emptySet()),
     ADMIN(
             Set.of(

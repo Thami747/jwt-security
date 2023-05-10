@@ -1,6 +1,6 @@
 package com.thami.security.security.token;
 
-import com.thami.security.model.User;
+import com.thami.security.model.Auth;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -23,18 +23,18 @@ public class ConfirmationToken {
     private LocalDateTime confirmedAt;
 
     @ManyToOne
-    @JoinColumn(nullable = false,
-                name = "user_id")
-    private User appUser;
+    @JoinColumn(nullable = true,
+            name = "auth_id")
+    private Auth auth;
 
     public ConfirmationToken() {
     }
 
-    public ConfirmationToken(String token, LocalDateTime createdAt, LocalDateTime expiresAt, User appUser) {
+    public ConfirmationToken(String token, LocalDateTime createdAt, LocalDateTime expiresAt, Auth auth) {
         this.token = token;
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
-        this.appUser = appUser;
+        this.auth = auth;
     }
 
     public Long getId() {
@@ -77,11 +77,11 @@ public class ConfirmationToken {
         this.confirmedAt = confirmedAt;
     }
 
-    public User getAppUser() {
-        return appUser;
+    public Auth getUser() {
+        return auth;
     }
 
-    public void setAppUser(User appUser) {
-        this.appUser = appUser;
+    public void setUser(Auth auth) {
+        this.auth = auth;
     }
 }

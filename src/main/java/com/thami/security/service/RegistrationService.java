@@ -1,9 +1,7 @@
 package com.thami.security.service;
 
-import com.thami.security.auth.AuthenticationResponse;
-import com.thami.security.auth.AuthenticationService;
+import com.thami.security.auth.*;
 import com.thami.security.email.EmailSender;
-import com.thami.security.auth.RegisterRequest;
 import com.thami.security.security.EmailValidator;
 import com.thami.security.security.token.ConfirmationToken;
 import com.thami.security.security.token.ConfirmationTokenService;
@@ -28,11 +26,11 @@ public class RegistrationService {
         this.emailSender = emailSender;
     }
 
-    public AuthenticationResponse register(RegisterRequest request, String siteUrl) {
+    public AuthenticationResponse registerCustomer(IndividualEmailRegisterRequest request, String siteUrl) {
         System.out.println("What is the siteURL: \n\n\n" + siteUrl);
         boolean isValidEmail = emailValidator.test(request.getEmail());
         if (isValidEmail) {
-            AuthenticationResponse tokenForNewUser = authenticationService.register(request);
+            AuthenticationResponse tokenForNewUser = authenticationService.registerCustomer(request);
 
             //Since, we are running the spring boot application in localhost, we are hardcoding the
             //url of the server. We are creating a POST request with token param
@@ -40,33 +38,68 @@ public class RegistrationService {
             emailSender.sendEmail(request.getEmail(), buildEmail(request.getFirstName(), link));
             return tokenForNewUser;
         } else {
-            throw new IllegalStateException(String.format("Email %s, not valid", request.getEmail()));
+            return AuthenticationResponse.builder()
+                    .message(String.format("Email %s, not valid", request.getEmail()))
+                    .build();
+        }
+    }
+
+    public AuthenticationResponse registerCorporate(CorporateEmailRegisterRequest request, String siteUrl) {
+        System.out.println("What is the siteURL: \n\n\n" + siteUrl);
+        boolean isValidEmail = emailValidator.test(request.getEmail());
+        if (isValidEmail) {
+            AuthenticationResponse tokenForNewUser = authenticationService.registerCorporate(request);
+
+            //Since, we are running the spring boot application in localhost, we are hardcoding the
+            //url of the server. We are creating a POST request with token param
+            String link = siteUrl + "/api/v1/auth/confirm?token=" + tokenForNewUser.getConfirmToken();
+            emailSender.sendEmail(request.getEmail(), buildEmail(request.getFirstName(), link));
+            return tokenForNewUser;
+        } else {
+            return AuthenticationResponse.builder()
+                    .message(String.format("Email %s, not valid", request.getEmail()))
+                    .build();
         }
     }
 
     @Transactional
-    public String confirmToken(String token) {
+    public AuthenticationResponse confirmToken(String token) {
         Optional<ConfirmationToken> confirmToken = confirmTokenService.getToken(token);
 
         if (confirmToken.isEmpty()) {
-            throw new IllegalStateException("Token not found!");
+            return AuthenticationResponse.builder()
+                    .confirmToken(token)
+                    .message("Token not found!")
+                    .build();
+//            throw new IllegalStateException();
         }
 
         if (confirmToken.get().getConfirmedAt() != null) {
-            throw new IllegalStateException("Email is already confirmed");
+            return AuthenticationResponse.builder()
+                    .confirmToken(token)
+                    .message("Email is already confirmed")
+                    .build();
+//            throw new IllegalStateException();
         }
 
         LocalDateTime expiresAt = confirmToken.get().getExpiresAt();
 
         if (expiresAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("Token is already expired!");
+            return AuthenticationResponse.builder()
+                    .confirmToken(token)
+                    .message("Token is already expired!")
+                    .build();
+//            throw new IllegalStateException();
         }
 
         confirmTokenService.setConfirmedAt(token);
-        authenticationService.enableUser(confirmToken.get().getAppUser().getEmail());
+        authenticationService.enableUser(confirmToken.get().getUser().getEmail());
 
         //Returning confirmation message if the token matches
-        return "Your email is confirmed. Thank you for using our service!";
+        return AuthenticationResponse.builder()
+                .confirmToken(token)
+                .message("Your email is confirmed. Thank you for using our service!")
+                .build();
     }
 
     private String buildEmail(String name, String link) {

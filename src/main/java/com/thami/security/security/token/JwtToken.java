@@ -1,6 +1,6 @@
 package com.thami.security.security.token;
 
-import com.thami.security.model.User;
+import com.thami.security.model.Auth;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 public class JwtToken {
-
   @Id
   @GeneratedValue
   public Long id;
@@ -29,6 +28,6 @@ public class JwtToken {
   public boolean expired;
 
   @ManyToOne
-  @JoinColumn(name = "user_id")
-  public User user;
+  @JoinColumn(name = "auth_id")
+  public Auth auth;
 }
