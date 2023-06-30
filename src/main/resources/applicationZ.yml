@@ -1,0 +1,135 @@
+##--------------------------------------------- Database configuration Docker--------------------------------------------------
+#
+#spring:
+#  profiles:
+#    active: "dev"
+#---
+#spring:
+#  config:
+#    activate:
+#      on-profile: dev
+#  datasource:
+#    url: jdbc:postgresql://db-15.c71cngqqvsdv.eu-north-1.rds.amazonaws.com:5432/postgres
+#    username: postgres
+#    password: password
+#    driver-class-name: org.postgresql.Driver
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+#    database: postgresql
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#  main:
+#    allow-circular-references: true
+#
+#  #--------------------------------------------- RabbitMQ configuration --------------------------------------------------
+#
+#  autoconfigure:
+#    exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+#
+#  #--------------------------------------OSIV Management------------------------------------------------------------------
+#
+#  jpa.open-in-view: false
+#
+#  #--------------------------------------------- Management configuration ------------------------------------------------
+#
+#  management:
+#    server:
+#      port: 9090
+#    endpoints:web.base-path: /manage
+#    endpoint:
+#      health:
+#        show-details: always
+#      web:exposure:include: beans, health, info
+#
+#  #--------------------------------------------- Mail --------------------------------------------------------------------
+#
+#  mail:
+#    host: localhost
+#    port: 1025
+#    username: root
+#    password: admin
+#
+#    properties:
+#      mail:
+#        smtp:
+#          ssl.trust: '*'
+#          auth: true
+#          starttls.enable: true
+#          connection-timeout: 5000
+#          timeout: 3000
+#          write-timeout: 5000
+#---
+#spring:
+#  config:
+#    activate:
+#      on-profile: docker
+#  datasource:
+#    url: jdbc:postgresql://messaging-db:5432/messaging
+#    username: messaging_user
+#    password: KR6MfuXMY6hIdFHJ
+#    driver-class-name: org.postgresql.Driver
+#  jpa:
+#    hibernate:
+#      ddl-auto: create-drop
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+#    database: postgresql
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#  main:
+#    allow-circular-references: true
+#
+#  #--------------------------------------------- RabbitMQ configuration --------------------------------------------------
+#
+#  autoconfigure:
+#    exclude: org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+#
+#  #--------------------------------------OSIV Management------------------------------------------------------------------
+#
+#  jpa.open-in-view: false
+#
+#  #--------------------------------------------- Management configuration ------------------------------------------------
+#
+#  management:
+#    server:
+#      port: 9090
+#    endpoints:web.base-path: /manage
+#    endpoint:
+#      health:
+#        show-details: always
+#      web:exposure:include: beans, health, info
+#
+#  #--------------------------------------------- Mail --------------------------------------------------------------------
+#
+#  mail:
+#    host: localhost
+#    port: 1025
+#    username: root
+#    password: admin
+#
+#    properties:
+#      mail:
+#        smtp:
+#          ssl.trust: '*'
+#          auth: true
+#          starttls.enable: true
+#          connection-timeout: 5000
+#          timeout: 3000
+#          write-timeout: 5000
+#---
+##--------------------------------------------- CUSTOM APP PROPS --------------------------------------------------------
+#
+#application:
+#  security:
+#    jwt:
+#      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+#      expiration: 86400000 # a day
+#      refresh-token:
+#        expiration: 604800000 # 7 days
+#
+##-----------------------------------------------------------------------------------------------------------------------
