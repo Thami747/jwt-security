@@ -404,3 +404,12 @@ ________________________________________________________________________________
    82  systemctl status nginx
    83  sudo su
    84  history
+
+   ___________________________________________________________________________________________________
+   these commands work on AWS too.
+
+   Create EC2 instance
+   Create RDS database to link to EC2 instance (Postgresql)
+
+   SSH into the box EC2 instance using the .pem file given
+   deploy the project using docker.
